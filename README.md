@@ -124,6 +124,38 @@ Terraform Doctor is intentionally starting small to prioritize **signal over noi
 
 ---
 
+## Real-world failure: Local vs Terraform Enterprise state mismatch
+
+**Scenario**  
+Infrastructure is deployed via Terraform Enterprise using remote state, while local development uses a local backend.
+
+**What happens**  
+Local `terraform plan` does not see remotely managed resources and attempts to recreate the entire stack.
+
+**Why this is dangerous**  
+- Local testing becomes impossible  
+- Every change must go through CI  
+- Feedback loops slow down dramatically
+
+**How Terraform Doctor helps**  
+Detects state execution mismatches early and warns when local and remote backends diverge.
+
+## Real-world failure: Circular dependency between infrastructure domains
+
+**Scenario**  
+An EKS module creates cluster identity, an RDS module creates a database, and access wiring requires outputs from both.
+
+**What happens**  
+Neither module can be applied independently, forcing manual steps or ad-hoc “glue” modules.
+
+**Why this is dangerous**  
+- Breaks automation  
+- Increases operational risk  
+- Makes refactoring unsafe
+
+**How Terraform Doctor helps**  
+Detects bidirectional module dependencies and recommends separating access wiring into a dedicated integration layer.
+
 ## Status
 
 This project is an early-stage skeleton designed to communicate intent, structure, and real-world relevance.
